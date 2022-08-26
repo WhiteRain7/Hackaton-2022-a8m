@@ -1,45 +1,38 @@
 import csv
+import datetime
 
-class ParsedContent:
-    x = []
-    y = []
-
-def parse():
-    limit = 150000
+def parse(filename = 'train.csv', limit = 10000, step = 1):
     limit_i = 0
-    result = ParsedContent()
-    with open('train.csv', encoding="utf-8") as f:
+    if limit: limit_ten_percents = limit // 10
+    
+    content = {'X': [], 'Y': []}
+    
+    with open(filename, encoding = 'utf-8') as f:
+        print('Parsing file "{}".'.format(filename))
+        
         file_content = csv.reader(f, delimiter=';')
-        ignore_header = True
-        for row in file_content:
-            if ignore_header:
-                ignore_header = False
-                continue
-            if limit_i % 5000 == 4999:
-                print(limit_i, "parsed")
-            #print('Was:', row, sep = '\n')
-            
-            parsedX = [
-                    #int(row[0]),  # purpose
-                    #row[1],       # date
-                    #row[2],       # region type
-                    #row[3],       # region
-                    #row[4],       # city
-                    #row[5],       # hex
-                    #float(row[6]),# lat ^v
-                    #float(row[7]),# lon <>
+        
+        for i, row in enumerate(file_content):
+            if i%step != 0 or i == 0: continue
                     
-                    *[(float(row[i]) if row[i] else 0.) for i in range(8, 8+30)],
+            parsedX = [
+                float(row[6])/180, # ^v
+                float(row[7])/180, # <>
+                int(datetime.datetime.fromisoformat(row[1]).timestamp())/10e9,
+                *[(float(row[i]) if row[i] else 0.) for i in range(8, 8+30)] # f1-f30
             ]
-
-            parsedY = [
-                    int(row[0]),  # purpose
-            ]
-
-            result.x.append(parsedX)
-            result.y.append(parsedY)
             
-            #print('Became:', parsed, sep = '\n')
-            if limit_i == limit: break
-            limit_i += 1
-    return result
+            parsedY = [int(row[0])] # purpose
+
+            content['X'].append(parsedX)
+            content['Y'].append(parsedY)
+
+            if limit:
+                if limit_i % limit_ten_percents == 0:
+                    print('Still parsing... {}0%'.format(limit_i // limit_ten_percents))
+                    if limit_i == limit: break
+                limit_i += 1
+            elif i%30000 == 0: print('Still parsing... iter #{}'.format(i))
+
+    print('Parsing finished.\n')
+    return content
