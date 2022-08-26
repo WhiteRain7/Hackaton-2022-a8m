@@ -1,46 +1,57 @@
-from this import d
-import torch
-import math
+import torch            
 
-from csv_parser import ParsedContent
-
-class PredictResult:
-    y = []
-    a = []
-    loss = 0
-
-    def __init__(self, y, a, loss):
-        self.y = y.t().tolist()[0]
-        self.a = a
-        self.loss = loss
-
-    def print(self):
-        print('y = [')
-        print(f'{", ".join([str(round(i, 2)) for i in self.y])}')
-        print(f']\nloss = {self.loss}')
-
-def predict(parsedData: ParsedContent):
+def predict(parsed, iterations = 50000, learning_rate = 1e-6, min_accuracy = None):
+    if (type(parsed) is not dict or
+        len(parsed.get('X', [])) == 0 or
+        len(parsed.get('Y', [])) == 0):
+            print('Incorrect data to prediction.')
+            return
+    
     dtype = torch.float
     device = torch.device("cpu")
 
-    x = torch.FloatTensor(parsedData.x) # получить массив массивов
-    y = torch.FloatTensor(parsedData.y) # получить массив массивов # с одним значением в каждом
+    x = torch.FloatTensor(parsed['X']) # list of lists of input data ==> tensor
+    y = torch.FloatTensor(parsed['Y']) # list of lists of output data ==> tensor
 
-    a = torch.randn(len(parsedData.x[0]), len(parsedData.y[0]), device=device, dtype=dtype, requires_grad=True)
-    #print(a)
+    layers_dimensions = [
+                         len(parsed['X'][0]),
+                         33,
+                         20,
+                         10,
+                         5,
+                         len(parsed['Y'][0])
+                        ]
 
-    learning_rate = 1e-6
-    for t in range(50000):
-        y_pred = x.mm(a)
+    layers = []
+    for i in range(len(layers_dimensions) - 1):
+        layer = torch.randn(layers_dimensions[i],
+                            layers_dimensions[i+1],
+                            device=device,
+                            dtype=dtype,
+                            requires_grad=True)
 
-        loss = (y_pred - y).pow(2).sum()
-        if t % 5000 == 4999:
-            print(t, loss.item())
+        layers.append(layer)
+
+    iterations_ten_percents = iterations // 10
+    print('Learning NN.')
+    
+    for t in range(iterations):
+        y_pred = x.mm(layers[0])
+                             
+        for layer in layers: y_pred = y_pred.clamp(min = 0, max = 1).mm(layer)
+
+        loss = (y_pred - y).pow(2).sum() # counting losses
+        if t % iterations_ten_percents == 0: print('Still learning... {}0% ==> {}'.format(t // iterations_ten_percents, loss.item()))
 
         loss.backward()
 
         with torch.no_grad():
-            a -= learning_rate * a.grad
-            a.grad.zero_()
+            for i in range(len(layers)):
+                layers[i] -= learning_rate * layers[i].grad
+                layers[i].grad.zero_()
     
-    return PredictResult(y_pred, a, loss.item())
+    print('Learning finished.\nFinal losses: ' + str(loss.item()) + '\n')
+
+    print('\n=============\n', layers, '\n=============\n')
+
+    return y_pred.clamp(min = 0, max = 1)
