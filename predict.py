@@ -33,6 +33,7 @@ def predict(parsed, iterations = 50000, learning_rate = 1e-6, min_accuracy = Non
         layers.append(layer)
 
     iterations_ten_percents = iterations // 10
+    if iterations_ten_percents == 0: iterations_ten_percents = 1
     print('Learning NN.')
     
     for t in range(iterations):
