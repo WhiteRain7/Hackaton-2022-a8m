@@ -3,7 +3,9 @@ import datetime
 
 def parse(filename = 'train.csv', limit = 10000, step = 1):
     limit_i = 0
-    if limit: limit_ten_percents = limit // 10
+    if limit: 
+        limit_ten_percents = limit // 10
+        if limit_ten_percents == 0: limit_ten_percents = 1
     
     content = {'X': [], 'Y': []}
     
