@@ -15,7 +15,7 @@ def predict(parsed, iterations = 50000, learning_rate = 1e-6, min_accuracy = Non
 
     layers_dimensions = [
                          len(parsed['X'][0]),
-                         33,
+                         30,
                          20,
                          10,
                          5,
@@ -38,7 +38,7 @@ def predict(parsed, iterations = 50000, learning_rate = 1e-6, min_accuracy = Non
     for t in range(iterations):
         y_pred = x.mm(layers[0])
                              
-        for layer in layers: y_pred = y_pred.clamp(min = 0, max = 1).mm(layer)
+        for layer in layers[1:]: y_pred = y_pred.clamp(min = 0, max = 1).mm(layer)
 
         loss = (y_pred - y).pow(2).sum() # counting losses
         if t % iterations_ten_percents == 0: print('Still learning... {}0% ==> {}'.format(t // iterations_ten_percents, loss.item()))
