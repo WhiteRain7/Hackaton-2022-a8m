@@ -164,4 +164,4 @@ if __name__ == '__main__':
     if (model.is_file()):
         main(get_nn_from=model)
     else:
-        main(save_as='model')
+        main(save_as=model)
