@@ -1,0 +1,8 @@
+certifi==2022.6.15
+charset-normalizer==2.1.1
+idna==3.3
+lxml==4.9.1
+requests==2.28.1
+torch==1.12.1
+typing_extensions==4.3.0
+urllib3==1.26.12

@@ -23,7 +23,6 @@ def get_data(url: str = URL) -> list:
     if not path.is_file():
         try:
             page = requests.get(url)
-            print(page)
             html = lxml.html.fromstring(page.content)
             table = html.xpath(".//table//tbody")[0]
             data = []
