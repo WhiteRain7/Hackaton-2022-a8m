@@ -149,7 +149,7 @@ def nn_learning(parsed, iterations = 50000,
                     t = 0
                     iterations = base_iterations
     
-    if old_model[1] < loss.item(): model, loss = old_model
+    if old_model[1].item() < loss.item(): model, loss = old_model
     
     print('Learning finished.\nFinal losses: ' + str(loss.item()) + '\nIterated', all_iterations, 'times.\n')
 
