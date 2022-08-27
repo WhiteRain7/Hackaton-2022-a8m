@@ -71,13 +71,16 @@ def get_nn_model (layers_dimensions):
 class emulate_loss:
     def item (self): return 99999999
 
-def nn_learning(parsed, iterations = 50000, 
-                        learning_rate = 1e-6, 
-                        min_accuracy = None, 
-                        forced_exit = False, 
-                        auto_reiterate = False, 
-                        max_renews = 0, 
-                        per_iter = 0.3):
+def nn_learning(parsed, iterations = 50000,     # Base count of iterations of NN
+                        learning_rate = 1e-6,   # 
+                        min_accuracy = None,    # If loss reached this value, NN will slowly decrease number of iterations
+                        forced_exit = False,    # If True, NN learning will immediately end when reached min_accuracy
+                        auto_reiterate = False, # If True, NN will do extra iterations, if loss regress is faster enough, 
+                                                # also it will reduce iteration number, if loss will decreasing too slowly
+                        max_renews = 0,         # If NN is learning too slowly, it do restart with new layers. Here you can
+                                                # specify how many restarts available (if 0 - NN will not do any restarts).
+                                                # After finishing, NN will use layer with the lowest loss.
+                        per_iter = 0.3):        # Specify the suitable number of loss decreasing (used with previous args)
     if (type(parsed) is not dict or
         len(parsed.get('X', [])) == 0 or
         len(parsed.get('Y', [])) == 0):
