@@ -3,6 +3,7 @@ population_api.json
 updated_wot.json
 train.csv
 test.csv
+model
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

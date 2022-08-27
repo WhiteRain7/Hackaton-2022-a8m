@@ -5,6 +5,8 @@ import pickle
 import csv_parser
 import predict
 
+DIRECTORY_FILES = pathlib.Path(__file__).parent.parent.absolute()
+
 def get_time(func):
     def wrap (*args, **kwargs):
         time_at_start = time.perf_counter()
@@ -17,9 +19,9 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
          save_as = None,     # ONLY IF GET__NN_FROM IS NONE: if save_as is str, save nn as binary file with at save_as path, else will not save
          print_logs = True,  # if True, python will print logs to console (else will not do any logs)
          ):
-    
+
     if get_nn_from is None:
-        filename = pathlib.Path(__file__).parent.parent.absolute() / 'train.csv'  # 152 767 ## 14 000 ones
+        filename = DIRECTORY_FILES / 'train.csv'  # 152 767 ## 14 000 ones
         parsed_data = get_time(csv_parser.parse)(filename, limit = 60000, step = 1, print_logs = print_logs)
 
         y_pred, model = get_time(predict.nn_learning)(parsed_data,
@@ -36,9 +38,9 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
             with open(save_as, 'wb') as f: pickle.dump(model, f)
 
     else: # if get_nn_from is path, not None
-            with open(get_nn_from, 'rb') as f: model = pickle.load(f)
-    
-    filename = pathlib.Path(__file__).parent.parent.absolute() / 'test.csv'
+        with open(get_nn_from, 'rb') as f: model = pickle.load(f)
+
+    filename = DIRECTORY_FILES / 'test.csv'
     check_data = get_time(csv_parser.parse)(filename, limit = 40000, step = 1)
     result = predict.predict_all(check_data['X'], model)
 
@@ -95,7 +97,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         ys = result.tolist()
         for i in range(len(ys)): ys[i].append(i) # [[buy-ratio, user_num], ...]
         ys.sort(reverse = True)
-        
+
         best_nums = 15
         print('Best {} positions:'.format(best_nums))
         for i in range(best_nums):
@@ -115,7 +117,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         for i in range(-1, -worst_nums-1, -1):
             verified = (check_data['Y'][ys[i][1]][0] == max(min(round(ys[i][0]), 1), 0))
             print('{:>3}) #{:<7} ({:>5}) - {}'.format(i, ys[i][1], round(ys[i][0], 2), verified))
-        
+
         zeros = 0
         ones = 0
         for i in range(len(ys)):
@@ -134,12 +136,12 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         verified_zeros = 0
         ones = 0
         verified_awans = 0
-        
+
         for i in range(int(len(ys)*verify_percents)):
             top_percent_content.append(ys[i][1])
             ratio = max(min(round(ys[i][0]), 1), 0)
             verified = (check_data['Y'][ys[i][1]][0] == ratio)
-                
+
             if ratio == 1: ones += 1
             else: zeros += 1
             if verified:
@@ -156,4 +158,10 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
 
     return top_percent_content
 
-main()
+
+if __name__ == '__main__':
+    model = DIRECTORY_FILES / 'model'
+    if (model.is_file()):
+        main(get_nn_from=model)
+    else:
+        main(save_as='model')
