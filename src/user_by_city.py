@@ -24,6 +24,7 @@ def load_parced_data() -> dict:
         min_percent_players = 0
         max_percent_players = 0
         for item in wot_data:
+            item['city'] = item['city'].replace('ё', 'е')
             population_in_city = population.get_population_by_city(
                 item['city'], population_data)
             percent_players_in_city = to_float(
@@ -31,9 +32,9 @@ def load_parced_data() -> dict:
             if (percent_players_in_city > max_percent_players):
                 max_percent_players = percent_players_in_city
 
-        flag = False
         data = {}
         for i, item in enumerate(wot_data):
+            item['city'] = item['city'].replace('ё', 'e')
             population_in_city = population.get_population_by_city(
                 item['city'], population_data)
             percent_players_in_city = to_float(
