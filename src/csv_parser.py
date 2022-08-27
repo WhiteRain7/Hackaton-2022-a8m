@@ -37,7 +37,7 @@ def parse(filename = 'train.csv', limit = 10000, step = 1):
             if limit:
                 if limit_i % limit_ten_percents == 0:
                     print('Still parsing... {}0%'.format(limit_i // limit_ten_percents))
-                    if limit_i >= limit: break
+                if limit_i >= limit: break
                 limit_i += 1
             elif i%30000 == 0: print('Still parsing... iter #{}'.format(i))
 
