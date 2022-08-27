@@ -14,7 +14,7 @@ def get_time(func):
 
 def main(): # 152 767 ## 14 000 awans
     parsed_data = get_time(csv_parser.parse)(limit = 14000, step = 1)
-    y_pred = get_time(predict.predict)(parsed_data, iterations = 1000)
+    y_pred, layers = get_time(predict.learning)(parsed_data, iterations = 100)
 
     print('Start verifying')
     y_pred = y_pred.t().tolist()[0]
