@@ -1,5 +1,6 @@
 wot_api.json
-corona_api.json
+population_api.json
+updated_wot.json
 train.csv
 test.csv
 # Byte-compiled / optimized / DLL files
