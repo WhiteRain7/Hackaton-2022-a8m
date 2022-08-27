@@ -2,7 +2,7 @@ import csv
 import datetime
 from user_by_city import load_parced_data, get_percent_by_city
 
-def parse(filename = 'train.csv', limit = 10000, step = 1):
+def parse(filename = 'train.csv', limit = 10000, step = 1, print_logs = True):
     data = load_parced_data()
     limit_i = 0
     if limit:
@@ -14,7 +14,7 @@ def parse(filename = 'train.csv', limit = 10000, step = 1):
     content = {'X': [], 'Y': []}
     
     with open(filename, encoding = 'utf-8') as f:
-        print('Parsing file "{}".'.format(filename))
+        if print_logs: print('Parsing file "{}".'.format(filename))
         
         file_content = csv.reader(f, delimiter=';')
         
@@ -36,10 +36,10 @@ def parse(filename = 'train.csv', limit = 10000, step = 1):
 
             if limit:
                 if limit_i % limit_ten_percents == 0:
-                    print('Still parsing... {}0%'.format(limit_i // limit_ten_percents))
+                    if print_logs: print('Still parsing... {}0%'.format(limit_i // limit_ten_percents))
                 if limit_i >= limit: break
                 limit_i += 1
-            elif i%30000 == 0: print('Still parsing... iter #{}'.format(i))
+            elif print_logs and i%30000 == 0: print('Still parsing... iter #{}'.format(i))
 
-    print('Parsing finished.\n')
+    if print_logs: print('Parsing finished.\n')
     return content
