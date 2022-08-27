@@ -1,16 +1,26 @@
-from .utils import (to_float, read_file_to_list, write_list_to_file,
-                    get_json_from_url)
 from pathlib import Path
+
+from utils import (to_float, read_file_to_list, write_list_to_file,
+                   get_json_from_url)
 
 URL = 'https://web.archive.org/web/20190514155638if_/http://www.wotext.ru/map/getcities'
 FILE_API_SAVE = 'wot_api.json'
 
 
+def get_max_users(data):
+    max_users = 0
+    for item in data:
+        users = get_users_by_city(item['city'], data)
+        if (users > max_users):
+            max_users = users
+    return max_users
+
+
 def get_users_by_city(city: str, data: list) -> float:
-    city = list(filter(lambda i, city=city: i['city'] == city, data))
-    if len(city) == 0:
+    item = list(filter(lambda i, city=city: i['city'] == city, data))
+    if len(item) == 0:
         return 0
-    return to_float(city[0].get('users'))
+    return to_float(item[0].get('users') / 3500)
 
 
 def get_data(url: str = URL) -> list:

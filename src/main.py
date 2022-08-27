@@ -1,8 +1,10 @@
-import csv_parser
-import api.wot as wot
-import predict
-
 import time
+import pathlib
+
+import csv_parser
+import predict
+from user_by_city import load_parced_data
+
 
 def get_time(func):
     def wrap (*args, **kwargs):
@@ -13,7 +15,9 @@ def get_time(func):
     return wrap
 
 def main(): # 152 767 ## 14 000 awans
-    parsed_data = get_time(csv_parser.parse)(limit = 14000, step = 1)
+    data = load_parced_data()
+    filename = pathlib.Path(__file__).parent.parent.absolute() / 'train.csv'
+    parsed_data = get_time(csv_parser.parse)(filename, limit = 14000, step = 1)
     y_pred, model = get_time(predict.nn_learning)(parsed_data, iterations = 500, learning_rate = 1e-5)
 
     check_data = get_time(csv_parser.parse)('test.csv', limit = 14000, step = 1)
