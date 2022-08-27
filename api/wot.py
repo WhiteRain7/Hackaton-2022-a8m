@@ -6,7 +6,7 @@ URL = 'https://web.archive.org/web/20190514155638if_/http://www.wotext.ru/map/ge
 FILE_API_SAVE = 'wot_api.json'
 
 
-def get_item_by_city(city: str, data: list) -> float:
+def get_users_by_city(city: str, data: list) -> float:
     city = list(filter(lambda i, city=city: i['city'] == city, data))
     if len(city) == 0:
         return 0
@@ -31,7 +31,7 @@ def get_data(url: str = URL) -> list:
 
 def main():
     data = get_data()
-    print(get_item_by_city('Москва', data))
+    print(get_users_by_city('Москва', data))
 
 
 if __name__ == '__main__':
