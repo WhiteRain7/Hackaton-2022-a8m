@@ -7,20 +7,19 @@ URL = 'https://web.archive.org/web/20190514155638if_/http://www.wotext.ru/map/ge
 FILE_API_SAVE = 'wot_api.json'
 
 
-def get_max_users(data):
-    max_users = 0
+def get_all_users(data):
+    all_users = 0
     for item in data:
         users = get_users_by_city(item['city'], data)
-        if (users > max_users):
-            max_users = users
-    return max_users
+        all_users += users
+    return all_users
 
 
 def get_users_by_city(city: str, data: list) -> float:
     item = list(filter(lambda i, city=city: i['city'] == city, data))
     if len(item) == 0:
         return 0
-    return to_float(item[0].get('users') / 3500)
+    return to_float(item[0].get('users'))
 
 
 def get_data(url: str = URL) -> list:

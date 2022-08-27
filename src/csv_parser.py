@@ -1,7 +1,9 @@
 import csv
 import datetime
+from user_by_city import load_parced_data, get_percent_by_city
 
 def parse(filename = 'train.csv', limit = 10000, step = 1):
+    data = load_parced_data()
     limit_i = 0
     if limit:
         if limit < 0: limit = 1
@@ -20,6 +22,7 @@ def parse(filename = 'train.csv', limit = 10000, step = 1):
             if i%step != 0 or i == 0: continue
                     
             parsedX = [
+                float(get_percent_by_city(row[4], data)),
                 float(row[6])/180, # ^v
                 float(row[7])/180, # <>
                 int(datetime.datetime.fromisoformat(row[1]).timestamp())/10e9,
