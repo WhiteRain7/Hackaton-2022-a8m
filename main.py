@@ -1,5 +1,5 @@
 import csv_parser
-import get_data
+import api.wot as wot
 import predict
 
 import time

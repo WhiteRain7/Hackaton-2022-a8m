@@ -1,3 +1,7 @@
+wot_api.json
+corona_api.json
+train.csv
+test.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
