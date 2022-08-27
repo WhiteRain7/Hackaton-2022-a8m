@@ -71,7 +71,13 @@ def get_nn_model (layers_dimensions):
 class emulate_loss:
     def item (self): return 99999999
 
-def nn_learning(parsed, iterations = 50000, learning_rate = 1e-6, min_accuracy = None, forced_exit = False, auto_reiterate = False, max_renews = 0, per_iter = 0.3):
+def nn_learning(parsed, iterations = 50000, 
+                        learning_rate = 1e-6, 
+                        min_accuracy = None, 
+                        forced_exit = False, 
+                        auto_reiterate = False, 
+                        max_renews = 0, 
+                        per_iter = 0.3):
     if (type(parsed) is not dict or
         len(parsed.get('X', [])) == 0 or
         len(parsed.get('Y', [])) == 0):
