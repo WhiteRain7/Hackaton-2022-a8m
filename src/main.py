@@ -20,7 +20,8 @@ def main(): # 152 767 ## 14 000 awans
     parsed_data = get_time(csv_parser.parse)(filename, limit = 14000, step = 1)
     y_pred, model = get_time(predict.nn_learning)(parsed_data, iterations = 500, learning_rate = 1e-5)
 
-    check_data = get_time(csv_parser.parse)('test.csv', limit = 14000, step = 1)
+    filename = pathlib.Path(__file__).parent.parent.absolute() / 'test.csv'
+    check_data = get_time(csv_parser.parse)(filename, limit = 14000, step = 1)
     result = predict.predict_all(check_data['X'], model)
     
     print('===============================================================\n')
