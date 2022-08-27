@@ -5,7 +5,7 @@ import pickle
 import csv_parser
 import predict
 
-DIRECTORY_FILES = pathlib.Path(__file__).parent.parent.absolute()
+DIRECTORY_FILES = pathlib.Path(__file__).parent.absolute() / 'files' 
 
 def get_time(func):
     def wrap (*args, **kwargs):
