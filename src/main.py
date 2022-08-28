@@ -170,7 +170,7 @@ def save_to_csv(data: list, filename: str = DIRECTORY_FILES / 'A8M.csv'):
         spamwriter = csv.writer(csvfile, delimiter=';')
         spamwriter.writerow(['id','label'])
         for item in data:
-            spamwriter.writerow(item)
+            spamwriter.writerow([item[0]+1,item[1]])
 
 if __name__ == '__main__':
     model = DIRECTORY_FILES / 'model_3_99'
