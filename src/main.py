@@ -22,7 +22,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
 
     if get_nn_from is None:
         filename = DIRECTORY_FILES / 'train.csv'  # 152 767 ## 14 000 ones
-        parsed_data = get_time(csv_parser.parse)(filename, limit = 60000, step = 1, print_logs = print_logs)
+        parsed_data = get_time(csv_parser.parse)(filename, limit = 14000, step = 1, print_logs = print_logs)
 
         y_pred, model = get_time(predict.nn_learning)(parsed_data,
                                                       iterations = 100,
@@ -40,8 +40,8 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
     else: # if get_nn_from is path, not None
         with open(get_nn_from, 'rb') as f: model = pickle.load(f)
 
-    filename = DIRECTORY_FILES / 'test.csv'
-    check_data = get_time(csv_parser.parse)(filename, limit = None, step = 1)
+    filename = DIRECTORY_FILES / 'test dataset.csv'
+    check_data = get_time(csv_parser.parse)(filename, limit = 0, step = 1)
     result = predict.predict_all(check_data['X'], model)
 
     if print_logs:
@@ -164,10 +164,18 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
 
     return top_percent_content
 
+def save_to_csv(data: list, filename: str = DIRECTORY_FILES / 'A8M.csv'):
+    import csv
+    with open(filename, 'w', newline='\n', encoding = 'utf-8') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=';')
+        spamwriter.writerow(['id','label'])
+        for item in data:
+            spamwriter.writerow(item)
 
 if __name__ == '__main__':
     model = DIRECTORY_FILES / 'model_3_99'
     if (model.is_file()):
-        main(get_nn_from=model)
+        result = main(get_nn_from=model)
     else:
-        main(save_as=model)
+        result = main(save_as=model)
+    save_to_csv(result)

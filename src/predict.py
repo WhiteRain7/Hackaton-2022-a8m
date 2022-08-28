@@ -98,9 +98,8 @@ def nn_learning(parsed, iterations = 50000,     # Base count of iterations of NN
 
     layers_dimensions = [
                          len(parsed['X'][0]),
+                         200,
                          100,
-                         50,
-                         20,
                          len(parsed['Y'][0])
                         ]
 
