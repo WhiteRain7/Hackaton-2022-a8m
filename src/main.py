@@ -144,7 +144,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         verified_ones = 0
 
         for i in range(int(len(ys)*verify_percents)):
-            top_percent_content.append([ys[i][1], (0 if ys[i][0] < round_border else 1)])
+            top_percent_content.append([ys[i][1], ys[i][0]])
             ratio = (0 if ys[i][0] < round_border else 1)
             verified = (check_data['Y'][ys[i][1]][0] == ratio)
 
