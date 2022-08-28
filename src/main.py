@@ -41,7 +41,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         with open(get_nn_from, 'rb') as f: model = pickle.load(f)
 
     filename = DIRECTORY_FILES / 'test.csv'
-    check_data = get_time(csv_parser.parse)(filename, limit = 40000, step = 1)
+    check_data = get_time(csv_parser.parse)(filename, limit = None, step = 1)
     result = predict.predict_all(check_data['X'], model)
 
     if print_logs:
@@ -100,9 +100,21 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         for i in range(len(ys)): ys[i].append(i) # [[buy-ratio, user_num], ...]
         ys.sort(reverse = True)
 
+        zeros = 0
+        ones = 0
+        for i in range(len(ys)):
+            if check_data['Y'][ys[i][1]][0] == 0: zeros += 1
+            else: ones += 1
+
+        print()
+        print('Here\'s in test file:')
+        print('Zeros:', zeros)
+        print('Ones:', ones)
+
         # if less than round_border, answer is 0, else 1
-        round_border = ys[-1][0] + (ys[0][0] - ys[-1][0]) / (ones / (1 if zeros == 0 else zeros) + 1)
-        print(round_border)
+        round_border = ys[-1][0] + (ys[0][0] - ys[-1][0]) / (zeros / (1 if ones == 0 else ones) + 1)
+        print('Round border:', round_border)
+        print()
 
         best_nums = 15
         print('Best {} positions:'.format(best_nums))
@@ -123,17 +135,6 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
         for i in range(-1, -worst_nums-1, -1):
             verified = (check_data['Y'][ys[i][1]][0] == (0 if ys[i][0] < round_border else 1))
             print('{:>3}) #{:<7} ({:>5}) - {}'.format(i, ys[i][1], round(ys[i][0], 2), verified))
-
-        zeros = 0
-        ones = 0
-        for i in range(len(ys)):
-            if check_data['Y'][ys[i][1]][0] == 0: zeros += 1
-            else: ones += 1
-
-        print()
-        print('Here\'s in test file:')
-        print('Zeros:', zeros)
-        print('Ones:', ones)
 
         verify_percents = .05
         top_percent_content = []
@@ -165,7 +166,7 @@ def main(get_nn_from = None, # path/to/binary/file or None to learn new nn
 
 
 if __name__ == '__main__':
-    model = DIRECTORY_FILES / 'model'
+    model = DIRECTORY_FILES / 'model_3_99'
     if (model.is_file()):
         main(get_nn_from=model)
     else:
