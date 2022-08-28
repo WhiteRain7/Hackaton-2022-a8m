@@ -1,6 +1,6 @@
 # Hackaton - 2022 - A&M
 
-### A8M.csv лежит в src/files
+### [A8M.csv лежит в src/files](https://github.com/WhiteRain7/Hackaton-2022-a8m/blob/main/src/files/A8M.csv)
 ### Как запустить проект
 
 - Внутри папки **src** создать папку **files**
